@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Application</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Weather Application</h2>
+
+    <div class="search-box">
+        <input type="text" id="cityInput" placeholder="Enter city">
+        <button onclick="weatherDetails()">Search</button>
+    </div>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>City</th>
+                <th>Temp</th>
+                <th>Condition</th>
+                <th>Humidity</th>
+                <th>Wind</th>
+            </tr>
+        </thead>
+        <tbody id="result"></tbody>
+    </table>
+</div>
+
+<script>
+
+const apiKey = "33dd51471456f79ce10a6da10ce01f1c";
+
+async function weatherDetails() {
+
+    const city = document.getElementById("cityInput").value;
+    const result = document.getElementById("result");
+
+    if (city.trim() === "") {
+        alert("Please enter the city name");
+        return;
+    }
+
+    const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+    );
+
+    const data = await response.json();
+
+    if (data.cod == "404") {
+        alert("City not found!");
+        result.innerHTML = "";
+        return;
+    }
+
+    result.innerHTML = `
+        <tr>
+            <td>${data.name}</td>
+            <td>${Math.round(data.main.temp)}°C</td>
+            <td>${data.weather[0].main}</td>
+            <td>${data.main.humidity}%</td>
+            <td>${data.wind.speed} km/h</td>
+        </tr>
+    `;
+}
+
+</script>
+
+</body>
+</html>
